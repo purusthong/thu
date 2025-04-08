@@ -18,12 +18,6 @@ export class User {
         return result;
     }
 
-    static async registerUser(tenDangNhap: string, matKhau: string, maQuyen: number) {
-        const sql = "INSERT INTO `TAIKHOANNGUOIDUNG` (tenDangNhap, matKhau, maQuyen) VALUES (?, ?, ?)";
-        const result = await DataBase.gI().query(sql, [tenDangNhap, matKhau, maQuyen]);
-        return result;
-    }
-
     static async findUserByUsername(tenDangNhap: string) {
         const sql = "SELECT * FROM `TAIKHOANNGUOIDUNG` WHERE tenDangNhap LIKE ?";
         const result = await DataBase.gI().query(sql, [`%${tenDangNhap}%`]);
