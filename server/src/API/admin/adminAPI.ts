@@ -18,53 +18,54 @@ export class AdminAPI {
                 const result = await Admin.getAllQuyen();
                 res.json(result);
             } catch (err) {
-                res.status(500).json({ error: "Lỗi server", details: err });
+                res.status(500).json({ error: "Server error", details: err });
             }
         });
-
+    
         this.router.post("/quyen", async (req: Request, res: Response) => {
             try {
                 const result = await Admin.createQuyen(req.body);
-                res.status(201).json({ message: "Tạo quyền thành công", data: result });
+                res.status(201).json({ message: "Permission created successfully", data: result });
             } catch (err) {
-                res.status(500).json({ error: "Lỗi server", details: err });
+                res.status(500).json({ error: "Server error", details: err });
             }
         });
-
+    
         this.router.put("/quyen/:id", async (req: Request, res: Response) => {
             try {
                 const result = await Admin.updateRQuyen(Number(req.params.id), req.body.tenQuyen);
-                res.json({ message: "Cập nhật quyền thành công", data: result });
+                res.json({ message: "Permission updated successfully", data: result });
             } catch (err) {
-                res.status(500).json({ error: "Lỗi server", details: err });
+                res.status(500).json({ error: "Server error", details: err });
             }
         });
-
+    
         this.router.delete("/quyen/:id", async (req: Request, res: Response) => {
             try {
                 const result = await Admin.deleteRQuyen(Number(req.params.id));
-                res.json({ message: "Xóa quyền thành công", data: result });
+                res.json({ message: "Permission deleted successfully", data: result });
             } catch (err) {
-                res.status(500).json({ error: "Lỗi server", details: err });
+                res.status(500).json({ error: "Server error", details: err });
             }
         });
-
+    
         this.router.get("/quyen/:id", async (req: Request, res: Response) => {
             try {
                 const result = await Admin.getQuyenById(Number(req.params.id));
                 res.json(result);
             } catch (err) {
-                res.status(500).json({ error: "Lỗi server", details: err });
+                res.status(500).json({ error: "Server error", details: err });
             }
         });
-
+    
         this.router.put("/cap-quyen/:maNguoiDung", async (req: Request, res: Response) => {
             try {
                 const result = await Admin.updateUserRQuyen(Number(req.params.maNguoiDung), req.body.maQuyen);
-                res.json({ message: "Cập nhật quyền người dùng thành công", data: result });
+                res.json({ message: "User permission updated successfully", data: result });
             } catch (err) {
-                res.status(500).json({ error: "Lỗi server", details: err });
+                res.status(500).json({ error: "Server error", details: err });
             }
         });
     }
+    
 }

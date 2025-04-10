@@ -18,6 +18,12 @@ export class User {
         return result;
     }
 
+    static async getPasswordByTenDangNhap(tenDangNhap: string){
+        const sql = "SELECT matKhau FROM `TAIKHOANNGUOIDUNG` WHERE tenDangNhap = ?";
+        const result = await DataBase.gI().query(sql, [tenDangNhap]);
+        return result;
+    }
+
     static async findUserByUsername(tenDangNhap: string) {
         const sql = "SELECT * FROM `TAIKHOANNGUOIDUNG` WHERE tenDangNhap LIKE ?";
         const result = await DataBase.gI().query(sql, [`%${tenDangNhap}%`]);

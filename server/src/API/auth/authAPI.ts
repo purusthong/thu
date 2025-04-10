@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from "express";
 import { Auth } from "./authSQL";
+import { User } from "../users/userSQL";
 
 export class AuthAPI {
     private router: Router;
@@ -36,5 +37,33 @@ export class AuthAPI {
                 res.status(500).json({ error: "Server error", details: error });
             }
         });
+        this.router.post("/login", (req: Request, res: Response) => {
+            const { tenDangNhap, matKhau } = req.body;
+            if (!tenDangNhap || !matKhau) {
+                res.status(400).json({ error: "Missing fields" });
+            }
+        
+            User.getPasswordByTenDangNhap(tenDangNhap)
+                .then((result: any) => {
+                    const rows = result[0];
+        
+                    if (!rows || rows.length === 0) {
+                        res.status(404).json({ error: "User not found" });
+                    }
+        
+                    const storedPassword = rows[0].matKhau;
+        
+                    if (storedPassword === matKhau) {
+                        res.status(200).json({ message: "Login successful" });
+                    } else {
+                        res.status(401).json({ error: "Incorrect password" });
+                    }
+                })
+                .catch((error) => {
+                    res.status(500).json({ error: "Server error", details: error.message || error });
+                });
+        });
+        
+        
     }
 }

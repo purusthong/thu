@@ -32,9 +32,9 @@ export class UserAPI {
             }
         });
 
-        this.router.get("/password/:id", async (req: Request, res: Response) => {
+        this.router.get("/password/:tenDangNhap", async (req: Request, res: Response) => {
             try {
-                const result = await User.getPasswordById(Number(req.params.id));
+                const result = await User.getPasswordByTenDangNhap(req.params.tenDangNhap);
                 res.json(result);
             } catch (error) {
                 res.status(500).json({ error: "Server error", details: error });
