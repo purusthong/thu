@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from "express";
 import { Auth } from "./authSQL";
+import { InfoAuth } from "./infoAuthSQL";
 import { User } from "../users/userSQL";
 
 export class AuthAPI {
@@ -20,15 +21,33 @@ export class AuthAPI {
 
         this.router.post("/register", (req: Request, res: Response) => {
             try {
-                const { tenDangNhap, matKhau, maQuyen } = req.body;
-
-                if (!tenDangNhap || !matKhau || maQuyen === undefined) {
+                const { matKhau, CCCD, hoVaTen, ngaySinh, gioiTinh, soDienThoai, soDienThoaiBan, Email, ngheNghiep, soNha, maPhuongXa } = req.body;
+                
+                if (!CCCD || !matKhau === undefined) {
                     res.status(400).json({ error: "Missing fields" });
                 }
 
-                Auth.registerUser(tenDangNhap, matKhau, maQuyen)
-                    .then((result) => {
-                        res.status(201).json({ message: "User registered successfully", data: result });
+                Auth.registerUser(CCCD, matKhau)
+                    .then((resultRes: any) => {
+                        const rowsRes = resultRes[0];
+                        if (!rowsRes || rowsRes.length == 0) {
+                            res.status(404).json({ error: "Register found" });
+                        }
+                        Auth.getIdAuth(CCCD).then((result: any) => {
+                            const rows = result[0];
+                            if (!rows || rows.length == 0) {
+                                res.status(404).json({ error: "User not found" });
+                            }
+                            const maNguoiDung = rows[0].maNguoiDung;
+                            const updateInfo = InfoAuth.updateInfoAuth(maNguoiDung, hoVaTen, Email, soDienThoai, soDienThoaiBan ?? "00", CCCD, gioiTinh, ngaySinh, ngheNghiep);
+                            const updateLocal = InfoAuth.updateLocalAuth(soNha, maPhuongXa, maNguoiDung);
+                            Promise.all([updateInfo, updateLocal]).then((result) => {
+                                res.status(201).json({ message: "User registered successfully", data: result });
+                            }).catch((error) => {
+                                res.status(500).json({ error: "Server error", details: error.message || error });
+                            })
+                        });
+
                     })
                     .catch((error) => {
                         res.status(500).json({ error: "Server error", details: error.message || error });
